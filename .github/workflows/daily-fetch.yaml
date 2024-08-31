@@ -28,8 +28,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "sabiyyuhakim@gmail.com"
+          git config --local user.name "SulthanAbiyyu"
 
       - name: Add and commit changes
         run: |
@@ -44,6 +44,7 @@ jobs:
           fi
 
       - name: Push changes
+        if: steps.add_and_commit.outputs.STATUS > 0
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
