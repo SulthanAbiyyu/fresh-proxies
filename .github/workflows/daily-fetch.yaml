@@ -2,12 +2,13 @@ name: Daily Fetch Cron Job
 
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+    - cron: "0 0 * * *"  # Runs daily at midnight UTC
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   daily-job:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,30 +25,26 @@ jobs:
       - name: Run script
         run: |
           python main.py
-            - name: Add File
 
-      - name: Add File
+      - name: Configure Git
         run: |
           git config --local user.email "sabiyyuhakim@gmail.com"
           git config --local user.name "SulthanAbiyyu"
+
+      - name: Add and commit changes
+        run: |
           git add .
-
-      - name: Check is need to push
-        id: check_status
-        run: |
           STATUS=$(git status --porcelain | wc -l)
-          echo "number of files that need to be committed:" $STATUS
-          echo "::set-output name=STATUS::$STATUS"
+          echo "number of files that need to be committed: $STATUS"
+          if [ $STATUS -gt 0 ]; then
+            now=$(date)
+            git commit -m "Auto Commit $now"
+          else
+            echo "No changes to commit."
+          fi
 
-      - name: Commit File
-        if: steps.check_status.outputs.STATUS > 0
-        run: |
-          echo "status"
-          now=$(date)
-          git commit -m "Auto Commit $now"
-
-      - name: Push Changes
-        if: steps.check_status.outputs.STATUS > 0
+      - name: Push changes
+        if: ${{ steps.add_and_commit.outputs.STATUS }} > 0
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

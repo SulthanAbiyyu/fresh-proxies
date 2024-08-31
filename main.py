@@ -13,6 +13,7 @@ def main():
 
     print("Fetching new proxies...")
     new_proxies = get_proxies()
+    new_proxies = list(set(new_proxies))[:10]
     print(f"Fetched {len(new_proxies)} new proxies.")
 
     with open("proxies.txt", "w") as f:
