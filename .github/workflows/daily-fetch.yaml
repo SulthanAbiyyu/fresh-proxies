@@ -44,7 +44,6 @@ jobs:
           fi
 
       - name: Push changes
-        if: steps.check_status.outputs.STATUS > 0
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
